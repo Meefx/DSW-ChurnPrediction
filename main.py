@@ -2,6 +2,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 import joblib
 import pandas as pd
+import processing_df
+
 
 def predict(tenure,device_class, games_product, music_product, education_product, call_center, video_product, use_myapp, monthly_purchase, 
             longitude, latitude, cltv, number_of_products, cost_per_product, location_bandung,
@@ -20,7 +22,8 @@ def predict(tenure,device_class, games_product, music_product, education_product
 
 def input_user():
   st.title('Customer Churn Predictor')
-  st.header('Enter the characteristics of user:')
+  st.header("1. Manual Input Prediction")
+  st.write('Enter the characteristics of user:')
   tenure_months = st.number_input('Tenure Months:', min_value=0.0, value=1.0)
   monthly_purchases = st.number_input('Monthly Purchases:', min_value=1.0, value=1000.0, step=1000.0) / 1000.0
 
@@ -133,5 +136,6 @@ def main():
 if __name__ == "__main__":  
   model = joblib.load("model.pkl")
   input_user()
+  processing_df.input_csv()
   st.title("Tableau Dashboard")
   main()

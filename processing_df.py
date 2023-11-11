@@ -1,0 +1,95 @@
+import streamlit as st
+import pandas as pd
+import joblib
+import matplotlib.pyplot as plt
+import warnings
+
+
+warnings.filterwarnings('ignore')
+model = joblib.load("model.pkl")
+
+def input_csv():
+  st.title("2. Predict from CSV")
+  st.write("Upload a CSV file to predict the outcome of the customers. [You should upload csv file with this format](https://drive.google.com/file/d/1tXfTBBWnE7Ni4Qai47aRrbnsVRC4_Ji7/view?usp=sharing)")
+  uploaded_file = st.file_uploader("Choose a file", type=["csv"])
+  if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.dataframe(df)
+    st.write("The uploaded file has been processed and the outcome of the data is predicted.")
+    prediction = preprocessing_csv(df)
+    # st.dataframe(prediction)
+    # Hitung distribusi churn label
+    churn_distribution = prediction['Churn Label'].value_counts()
+
+    # Tampilkan pie chart menggunakan matplotlib
+    fig, ax = plt.subplots()
+    ax.pie(churn_distribution, labels=["Retain","Churn"], autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    # Tambahkan judul
+    plt.title('Distribution of Churn Label')
+
+    # Tampilkan di Streamlit
+    st.pyplot(fig)
+
+    df['Churn Label'] = prediction['Churn Label']
+    csv = df.to_csv()
+
+    st.download_button(
+        label="Download data as CSV",
+        data=csv,
+        file_name='Prediction Result.csv',
+        mime='text/csv',
+    )
+    # st.write("The outcome of the patient is: ", df.iloc[0, -1])
+
+def preprocessing_csv(df):
+  # Set index to Customer ID
+  df.dropna(inplace=True)
+  df.set_index("Customer ID", inplace=True)
+
+  # Replacing values to numeric
+  replace_map = {
+      'Yes': 1,
+      'No': 0,
+      'No internet service': 0
+  }
+
+  for col in ["Games Product", "Music Product", "Education Product", "Call Center", "Video Product", "Use MyApp"]:
+      df[col] = df[col].replace(replace_map)
+
+  # Ordinal encoding
+  device_class_map = {
+      'High End': 2,
+      'Mid End': 1,
+      'Low End': 0
+  }
+  df['Device Class'] = df['Device Class'].replace(device_class_map)
+
+  # One-Hot Encoding
+  df = pd.get_dummies(df, columns=["Location", "Payment Method"])
+
+
+  # Feature Engineering
+  df['number_of_products'] = df[ ["Games Product", "Music Product", "Education Product", "Call Center", "Video Product", "Use MyApp"]].sum(axis=1)
+  df['cost_per_product'] = df.apply(divide_cost, axis=1)
+
+  df = df[['Tenure Months', 'Device Class', 'Games Product', 'Music Product',
+     'Education Product', 'Call Center', 'Video Product', 'Use MyApp',
+     'Monthly Purchase (Thou. IDR)', 'Longitude', 'Latitude',
+     'CLTV (Predicted Thou. IDR)', 'number_of_products', 'cost_per_product','Location_Bandung', 'Location_Jakarta',
+     'Payment Method_Credit', 'Payment Method_Debit',
+     'Payment Method_Digital Wallet', 'Payment Method_Pulsa']]
+
+  df['Churn Label'] = model.predict(df)
+
+  return df
+
+
+def divide_cost(row):
+  if row['number_of_products'] > 0:
+      return row['Monthly Purchase (Thou. IDR)'] / (row['number_of_products'] + 1)
+  else:
+      return row['Monthly Purchase (Thou. IDR)']
+
+
+
