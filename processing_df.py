@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 import warnings
+import plotly.express as px
 
 
 warnings.filterwarnings('ignore')
@@ -20,16 +21,33 @@ def input_csv():
     # st.dataframe(prediction)
     # Hitung distribusi churn label
     churn_distribution = prediction['Churn Label'].value_counts()
+    churn_distribution.index = ["Retain","Churn"]
+    churn_distribution = churn_distribution.T.reset_index()
 
     # Tampilkan pie chart menggunakan matplotlib
-    fig, ax = plt.subplots()
-    ax.pie(churn_distribution, labels=["Retain","Churn"], autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    # Tambahkan judul
-    plt.title('Distribution of Churn Label')
+    # fig, ax = plt.subplots()
+    # # Warna untuk setiap kategori
+    # colors = ['lightgrey', 'red']
+
+    # ax.pie(churn_distribution, labels=["Retain", "Churn"], autopct='%1.1f%%', startangle=90, colors=colors, textprops={'fontsize': 14})
+    # ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    # # Tambahkan judul
+    # plt.title('Distribution of Churn Label', fontsize=16) 
+
+
+    # # Tampilkan di Streamlit
+    # st.pyplot(fig)
+    # Buat pie chart menggunakan Plotly Express
+    fig = px.pie(churn_distribution, values='count', names='index', color='index',
+     color_discrete_map={'Retain': 'lightgrey', 'Churn': 'red'},
+     title='Retention vs Churn')
+
+    fig.update_traces(textinfo='percent', textfont_size=24)
+
 
     # Tampilkan di Streamlit
-    st.pyplot(fig)
+    st.plotly_chart(fig)
 
     df['Churn Label'] = prediction['Churn Label']
     csv = df.to_csv()
