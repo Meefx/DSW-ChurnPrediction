@@ -25,9 +25,9 @@ def input_user():
   st.header("1. Manual Input Prediction")
   st.write('Enter the characteristics of user:')
   tenure_months = st.number_input('Tenure Months:', min_value=0.0, value=1.0)
-  monthly_purchases = st.number_input('Monthly Purchases:', min_value=1.0, value=1000.0, step=1000.0) / 1000.0
+  monthly_purchases = st.number_input('Monthly Purchases (Thou. IDR):', min_value=1.0, value=1000.0, step=1000.0) / 1000.0
 
-  cltv = st.number_input('Customer Lifetime Value:', min_value=1.0, value=10000.0, step=1000.0) / 1000.0
+  cltv = st.number_input('Customer Lifetime Value (Thou. IDR):', min_value=1.0, value=10000.0, step=1000.0) / 1000.0
 
   location = st.selectbox('Location:', ['Jakarta', 'Bandung'])
 
