@@ -12,6 +12,7 @@ model = joblib.load("model.pkl")
 def input_csv():
   st.title("2. Predict from CSV")
   st.write("Upload a CSV file to predict the outcome of the customers. [You should upload csv file with this format](https://drive.google.com/file/d/1tXfTBBWnE7Ni4Qai47aRrbnsVRC4_Ji7/view?usp=sharing)")
+  st.write("Note: Monthly Purchase and CLTV in [Thou. IDR] format")
   uploaded_file = st.file_uploader("Choose a file", type=["csv"])
   if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
