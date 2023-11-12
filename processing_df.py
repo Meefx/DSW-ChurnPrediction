@@ -89,25 +89,18 @@ def preprocessing_csv(df):
 
   # Feature Engineering
   df['number_of_products'] = df[ ["Games Product", "Music Product", "Education Product", "Call Center", "Video Product", "Use MyApp"]].sum(axis=1)
-  df['cost_per_product'] = df.apply(divide_cost, axis=1)
 
   df = df[['Tenure Months', 'Device Class', 'Games Product', 'Music Product',
      'Education Product', 'Call Center', 'Video Product', 'Use MyApp',
      'Monthly Purchase (Thou. IDR)', 'Longitude', 'Latitude',
-     'CLTV (Predicted Thou. IDR)', 'number_of_products', 'cost_per_product','Location_Bandung', 'Location_Jakarta',
+     'CLTV (Predicted Thou. IDR)','Location_Bandung', 'Location_Jakarta',
      'Payment Method_Credit', 'Payment Method_Debit',
-     'Payment Method_Digital Wallet', 'Payment Method_Pulsa']]
+     'Payment Method_Digital Wallet', 'Payment Method_Pulsa', 'number_of_products']]
 
   df['Churn Label'] = model.predict(df)
 
   return df
 
-
-def divide_cost(row):
-  if row['number_of_products'] > 0:
-      return row['Monthly Purchase (Thou. IDR)'] / (row['number_of_products'] + 1)
-  else:
-      return row['Monthly Purchase (Thou. IDR)']
 
 
 

@@ -9,14 +9,14 @@ def predict(tenure,device_class, games_product, music_product, education_product
             longitude, latitude, cltv, number_of_products, cost_per_product, location_bandung,
             location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa):
   data = pd.DataFrame([[tenure,device_class, games_product, music_product, education_product, call_center, video_product, use_myapp, monthly_purchase, 
-            longitude, latitude, cltv, number_of_products, cost_per_product, location_bandung,
-            location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa]], columns=['Tenure Months', 'Device Class', 'Games Product', 'Music Product',
+            longitude, latitude, cltv, location_bandung,
+            location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa, number_of_products]], columns=['Tenure Months', 'Device Class', 'Games Product', 'Music Product',
        'Education Product', 'Call Center', 'Video Product', 'Use MyApp',
        'Monthly Purchase (Thou. IDR)', 'Longitude', 'Latitude',
-       'CLTV (Predicted Thou. IDR)', 'number_of_products', 'cost_per_product',
+       'CLTV (Predicted Thou. IDR)',
        'Location_Bandung', 'Location_Jakarta', 'Payment Method_Credit',
        'Payment Method_Debit', 'Payment Method_Digital Wallet',
-       'Payment Method_Pulsa'])
+       'Payment Method_Pulsa', 'number_of_products'])
 
   return [model.predict(data),model.predict_proba(data)[:, 1]]
 
@@ -110,20 +110,13 @@ def input_user():
     has_use_myapp = 1
 
   number_of_products = option_1 + option_2 + option_3 + option_4 + option_5 + option_6
-  cost_per_product = 0
-  if (number_of_products > 0):
-    cost_per_product = monthly_purchases/(number_of_products + 1)
-  else:
-    cost_per_product = monthly_purchases
-
-
 
   if st.button('Predict Churn'):
     isChurn, churnProb = predict(tenure_months, selected_device_class, has_games_product, has_music_product, 
                                  has_education_product, has_call_center, has_video_product, has_use_myapp, 
-                                 monthly_purchases, longitude, latitude, cltv, number_of_products,
-                                 cost_per_product, location_bandung, location_jakarta, method_credit,
-                                 method_debit, method_eWallet, method_pulsa)
+                                 monthly_purchases, longitude, latitude, cltv,
+                                 location_bandung, location_jakarta, method_credit,
+                                 method_debit, method_eWallet, method_pulsa,number_of_products)
     if (isChurn[0] == 1):
       st.error(f'Customer will churn with probability of {(churnProb[0]):,.2f}', icon="🚨")
     else:
