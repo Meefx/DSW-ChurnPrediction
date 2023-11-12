@@ -24,10 +24,10 @@ def input_user():
   st.title('Customer Churn Predictor')
   st.header("1. Manual Input Prediction")
   st.write('Enter the characteristics of user:')
-  tenure_months = st.number_input('Tenure Months:', min_value=0.0, value=1.0)
-  monthly_purchases = st.number_input('Monthly Purchases (Thou. IDR):', min_value=1.0, value=1000.0, step=1000.0) / 1000.0
+  tenure_months = st.number_input('Tenure Months:', min_value=0, value=1)
+  monthly_purchases = st.number_input('Monthly Purchases (Rp):', min_value=1000, value=1000, step=1000) / 1000
 
-  cltv = st.number_input('Customer Lifetime Value (Thou. IDR):', min_value=1.0, value=10000.0, step=1000.0) / 1000.0
+  cltv = st.number_input('Customer Lifetime Value (Rp):', min_value=1000, value=10000, step=1000) / 1000
 
   location = st.selectbox('Location:', ['Jakarta', 'Bandung'])
 
@@ -76,7 +76,7 @@ def input_user():
 
   selected_device_class = device_class_map[device_class]
 
-  st.write('Subscribed Products (Can more than one):')
+  st.write('Used Products / Services:')
   option_1 = st.checkbox('Games Product')
   option_2 = st.checkbox('Music Product')
   option_3 = st.checkbox('Education Product')
@@ -130,5 +130,5 @@ if __name__ == "__main__":
   model = joblib.load("model.pkl")
   input_user()
   processing_df.input_csv()
-  st.title("Tableau Dashboard")
+  st.title("3. Tableau Dashboard")
   main()
