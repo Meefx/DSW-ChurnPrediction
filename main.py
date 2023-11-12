@@ -6,8 +6,8 @@ import processing_df
 
 
 def predict(tenure,device_class, games_product, music_product, education_product, call_center, video_product, use_myapp, monthly_purchase, 
-            longitude, latitude, cltv, number_of_products, cost_per_product, location_bandung,
-            location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa):
+            longitude, latitude, cltv,location_bandung,
+            location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa, number_of_products):
   data = pd.DataFrame([[tenure,device_class, games_product, music_product, education_product, call_center, video_product, use_myapp, monthly_purchase, 
             longitude, latitude, cltv, location_bandung,
             location_jakarta, method_credit, method_debit, method_ewallet, method_pulsa, number_of_products]], columns=['Tenure Months', 'Device Class', 'Games Product', 'Music Product',
