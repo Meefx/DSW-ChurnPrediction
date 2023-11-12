@@ -15,9 +15,10 @@ def input_csv():
   uploaded_file = st.file_uploader("Choose a file", type=["csv"])
   if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
-    st.dataframe(df)
-    st.write("The uploaded file has been processed and the outcome of the data is predicted.")
     prediction = preprocessing_csv(df)
+    df['Churn Label'] = prediction['Churn Label']
+    st.write("The uploaded file has been processed and the outcome of the data is predicted.")
+    st.dataframe(df)
     # st.dataframe(prediction)
     # Hitung distribusi churn label
     churn_distribution = prediction['Churn Label'].value_counts()
@@ -49,7 +50,7 @@ def input_csv():
     # Tampilkan di Streamlit
     st.plotly_chart(fig)
 
-    df['Churn Label'] = prediction['Churn Label']
+    
     csv = df.to_csv()
 
     st.download_button(
